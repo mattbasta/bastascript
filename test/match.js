@@ -67,7 +67,9 @@ var Match =
     Pattern.ANY = new Pattern;
     Pattern.ANY.template = Pattern.ANY;
 
-    var quote = JSON.stringify;
+    var quote = function(data) {
+        return JSON.stringify(data, null, ' ');
+    };
 
     function MatchError(msg) {
         this.message = msg;

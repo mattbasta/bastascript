@@ -1,7 +1,6 @@
 LBR    \r\n|\r|\n
-int  [0-9]|[1-9][0-9]+
-exp  [eE][-+]?[0-9]+
-frac  ("."[0-9]+)
+int  (?:[1-9][0-9]+|[0-9])
+frac  (?:{int}"."[0-9]+)
 IDS  [a-zA-Z$_]
 IDP  [a-zA-Z$_]|[0-9]
 UIDS  [a-zA-Z$_]|{EIDS}|"\\"u[0-9a-f]{4}
@@ -20,32 +19,27 @@ EIDP [\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\
 
 %%
 
-";"\s+/("++"|"--")      return ';'
-\n(\s|\n)*/("++"|"--")  return ';'
+";"                     return ';'
 
 (\r\n|\r|\n)            %{
-                           if (yy.ASI) { this.unput(yytext); yy.ASI=false; return ';' }
-                           else yy.lineBreak = true;
+                           yy.lineBreak = true;
                         %}
 
 \s+/(?:(?:"//"|"/*").*(?:\n|\r))  if (yy.ASI) this.unput(';'+yytext);
 
-\s+                     /*yy.ASI=false<]; [> skip whitespace */
+\s+                     /* skip whitespace */
 
 "//".*\r\n              %{ var t = yytext;
-                           if (yy.ASI) { this.unput(t); yy.ASI=false; return ';'}
                            yytext = t.substr(2, yyleng-4);
                            yy.lineBreak = true;
                            return 'COMMENT';
                         %}
 "//".*(\r|\n)           %{ var t = yytext;
-                           if (yy.ASI) { this.unput(t); yy.ASI=false; return ';'}
                            yytext = t.substr(2, yyleng-3);
                            yy.lineBreak = true;
                            return 'COMMENT';
                         %}
 "//".*                  %{ var t = yytext;
-                           if (yy.ASI) { this.unput(t); yy.ASI=false; return ';'}
                            yytext = t.substr(2, yyleng-2);
                            return 'COMMENT';
                         %}
@@ -58,10 +52,8 @@ EIDP [\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\
                            return 'COMMENT_BLOCK'
                         %}
 
-"0"[xX][a-fA-F0-9]+/([^a-zA-Z$_]{0,1})              yy.ASI = false; return 'NUMBER';
-([1-9][0-9]+|[0-9]){frac}?{exp}?/([^a-zA-Z$_]{0,1}) yy.ASI = false; return 'NUMBER';
-{frac}{exp}?/([^a-zA-Z$_]{0,1})                     yy.ASI = false; return 'NUMBER';
-[0-9]+/([^a-zA-Z$_]{0,1})                           yy.ASI = false; return 'NUMBER';
+{frac}/([^a-zA-Z$_]{0,1})                     return 'NUMBER';
+{int}/([^a-zA-Z$_]{0,1})                           return 'NUMBER';
 
 '"'(?:"\\"(?:.|{LBR})|[^"\\\n])*'"'    %{
         yy.ASI = false;
@@ -89,16 +81,18 @@ EIDP [\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\
 %}
 
 
-"{"                     yy.ASI = false;                            return 'OPENBRACE'
+"{"                                                                return 'OPENBRACE'
 "}"                                                                return 'CLOSEBRACE'
-"["                     yy.ASI = false;                            return '['
+"["                                                                return '['
 "]"                                                                return ']'
-"("                     yy.ASI = false;                            return '('
+"("                                                                return '('
 ")"                                                                return ')'
 ","                                                                return ','
+".="                                                               return 'DOTEQUAL'
 "."                                                                return '.'
-";"                     yy.ASI = false;                            return ';'
+";"                                                                return ';'
 ":"                                                                return ':'
+"->"                                                               return 'SKINNYARROW'
 "+="                                                               return 'PLUSEQUAL'
 "-="                                                               return 'MINUSEQUAL'
 "*="                                                               return 'MULTEQUAL'
@@ -137,9 +131,9 @@ EIDP [\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\
 "?"                                                                return '?'
 "/"                                                                return '/'
 "="                                                                return '='
-"break"                  yy.ASI = true;                            return 'BREAK'
+"break"                                                            return 'BREAK'
 "case"                                                             return 'CASE'
-"continue"               yy.ASI = true;                            return 'CONTINUE'
+"continue"                                                         return 'CONTINUE'
 "debugger"                                                         return 'DEBUGGER'
 "default"                                                          return 'DEFAULT'
 "delete"                                                           return 'DELETETOKEN'
@@ -152,37 +146,23 @@ EIDP [\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\
 "in"                                                               return 'INTOKEN'
 "instanceof"                                                       return 'INSTANCEOF'
 "new"                                                              return 'NEW'
-"return"                 yy.ASI = true;                            return 'RETURN'
+"return"                                                           return 'RETURN'
 "switch"                                                           return 'SWITCH'
 "try"                                                              return 'TRY'
 "catch"                                                            return 'CATCH'
-"throw"                  yy.ASI = true;                            return 'THROW'
+"throw"                                                            return 'THROW'
 "typeof"                                                           return 'TYPEOF'
 "var"                                                              return 'VAR'
 "void"                                                             return 'VOIDTOKEN'
 "while"                                                            return 'WHILE'
-"with"                                                             return 'WITH'
-"class"                                                            return 'CLASS'
 "const"                                                            return 'CONSTTOKEN'
 "let"                                                              return 'LET'
-"enum"                                                             return 'ENUM'
-"export"                                                           return 'EXPORT'
-"extends"                                                          return 'EXTENDS'
-"import"                                                           return 'IMPORT'
-"super"                                                            return 'SUPERTOKEN'
-<strict>"implements"                                               return 'IMPLEMENTS'
-<strict>"interface"                                                return 'INTERFACE'
-<strict>"package"                                                  return 'PACKAGE'
-<strict>"private"                                                  return 'PRIVATE'
-<strict>"protected"                                                return 'PROTECTED'
-<strict>"public"                                                   return 'PUBLIC'
-<strict>"static"                                                   return 'STATIC'
-<strict>"yield"                                                    return 'YIELD'
-"this"                   yy.ASI = false;                           return 'THISTOKEN'
-"true"                   yy.ASI = false;                           return 'TRUETOKEN'
-"false"                  yy.ASI = false;                           return 'FALSETOKEN'
-"null"                   yy.ASI = false;                           return 'NULLTOKEN'
-{UIDS}{UIDP}*            yy.ASI = false; yytext = parseId(yytext); return 'IDENT';
+"yield"                                                            return 'YIELD'
+"this"                                                             return 'THISTOKEN'
+"true"                                                             return 'TRUETOKEN'
+"false"                                                            return 'FALSETOKEN'
+"null"                                                             return 'NULLTOKEN'
+{UIDS}{UIDP}*                            yytext = parseId(yytext); return 'IDENT';
 .                                                                  return 'ILLEGAL'
 <<EOF>>                                                            /* */
 

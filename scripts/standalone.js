@@ -20,7 +20,7 @@ function normalizeModules (mods, path) {
 
 function generate (path) {
     var modules = {
-          "reflect.js": "dist/reflect.js",
+          "bs.js": "dist/bs.js",
           "parser.js": "dist/parser.js",
           "stringify.js": "dist/stringify.js",
           "moznodes.js": "dist/moznodes.js",
@@ -28,7 +28,7 @@ function generate (path) {
         };
     var script = bundler.bundle(normalizeModules(modules, path));
 
-    var out = "var Reflect = (function() {\n" + script + ";\nreturn require('reflect').Reflect;\n})();";
+    var out = "var bs = (function() {\n" + script + ";\nreturn require('bs');\n})();";
     console.log(out);
 }
 

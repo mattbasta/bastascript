@@ -11,5 +11,5 @@ test: move dist
 	node test/all-tests.js
 
 standalone: move dist
-	node scripts/standalone.js | uglifyjs > standalone/reflect.js
+	node scripts/standalone.js | uglifyjs > standalone/bs.js
 

@@ -29,7 +29,7 @@
 */
 
 /*jslint browser:true node:true */
-/*global reflect:true */
+/*global bs:true */
 
 var runTests, data;
 
@@ -12171,177 +12171,6 @@ data = {
         }
     },
 
-    'with statement': {
-
-        'with (x) foo = bar': {
-            type: 'WithStatement',
-            object: {
-                type: 'Identifier',
-                name: 'x',
-                range: [6, 7],
-                loc: {
-                    start: { line: 1, column: 6 },
-                    end: { line: 1, column: 7 }
-                }
-            },
-            body: {
-                type: 'ExpressionStatement',
-                expression: {
-                    type: 'AssignmentExpression',
-                    operator: '=',
-                    left: {
-                        type: 'Identifier',
-                        name: 'foo',
-                        range: [9, 12],
-                        loc: {
-                            start: { line: 1, column: 9 },
-                            end: { line: 1, column: 12 }
-                        }
-                    },
-                    right: {
-                        type: 'Identifier',
-                        name: 'bar',
-                        range: [15, 18],
-                        loc: {
-                            start: { line: 1, column: 15 },
-                            end: { line: 1, column: 18 }
-                        }
-                    },
-                    range: [9, 18],
-                    loc: {
-                        start: { line: 1, column: 9 },
-                        end: { line: 1, column: 18 }
-                    }
-                },
-                range: [9, 18],
-                loc: {
-                    start: { line: 1, column: 9 },
-                    end: { line: 1, column: 18 }
-                }
-            },
-            range: [0, 18],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 18 }
-            }
-        },
-
-        'with (x) foo = bar;': {
-            type: 'WithStatement',
-            object: {
-                type: 'Identifier',
-                name: 'x',
-                range: [6, 7],
-                loc: {
-                    start: { line: 1, column: 6 },
-                    end: { line: 1, column: 7 }
-                }
-            },
-            body: {
-                type: 'ExpressionStatement',
-                expression: {
-                    type: 'AssignmentExpression',
-                    operator: '=',
-                    left: {
-                        type: 'Identifier',
-                        name: 'foo',
-                        range: [9, 12],
-                        loc: {
-                            start: { line: 1, column: 9 },
-                            end: { line: 1, column: 12 }
-                        }
-                    },
-                    right: {
-                        type: 'Identifier',
-                        name: 'bar',
-                        range: [15, 18],
-                        loc: {
-                            start: { line: 1, column: 15 },
-                            end: { line: 1, column: 18 }
-                        }
-                    },
-                    range: [9, 18],
-                    loc: {
-                        start: { line: 1, column: 9 },
-                        end: { line: 1, column: 18 }
-                    }
-                },
-                range: [9, 19],
-                loc: {
-                    start: { line: 1, column: 9 },
-                    end: { line: 1, column: 19 }
-                }
-            },
-            range: [0, 19],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 19 }
-            }
-        },
-
-        'with (x) { foo = bar }': {
-            type: 'WithStatement',
-            object: {
-                type: 'Identifier',
-                name: 'x',
-                range: [6, 7],
-                loc: {
-                    start: { line: 1, column: 6 },
-                    end: { line: 1, column: 7 }
-                }
-            },
-            body: {
-                type: 'BlockStatement',
-                body: [{
-                    type: 'ExpressionStatement',
-                    expression: {
-                        type: 'AssignmentExpression',
-                        operator: '=',
-                        left: {
-                            type: 'Identifier',
-                            name: 'foo',
-                            range: [11, 14],
-                            loc: {
-                                start: { line: 1, column: 11 },
-                                end: { line: 1, column: 14 }
-                            }
-                        },
-                        right: {
-                            type: 'Identifier',
-                            name: 'bar',
-                            range: [17, 20],
-                            loc: {
-                                start: { line: 1, column: 17 },
-                                end: { line: 1, column: 20 }
-                            }
-                        },
-                        range: [11, 20],
-                        loc: {
-                            start: { line: 1, column: 11 },
-                            end: { line: 1, column: 20 }
-                        }
-                    },
-                    range: [11, 21],
-                    loc: {
-                        start: { line: 1, column: 11 },
-                        end: { line: 1, column: 21 }
-                    }
-                }],
-                range: [9, 22],
-                loc: {
-                    start: { line: 1, column: 9 },
-                    end: { line: 1, column: 22 }
-                }
-            },
-            range: [0, 22],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 22 }
-            }
-        }
-
-    },
-
     'switch statement': {
 
         'switch (x) {}': {
@@ -16958,7 +16787,7 @@ function adjustRegexLiteral(key, value) {
 }
 
 if (typeof window === 'undefined') {
-    var reflect = require('../dist/reflect');
+    var bs = require('../dist/bs');
 }
 
 function NotMatchingError(expected, actual, diff) {
@@ -17007,7 +16836,7 @@ function testParse(code, syntax) {
 
     expected = JSON.stringify(sortObject(syntax), null, 4);
     try {
-        tree = reflect.parse(code, options);
+        tree = bs.parse(code, options);
         tree = (options.comment || options.tokens || options.tolerant) ? tree : tree.body[0];
 
         if (options.tolerant) {
@@ -17019,7 +16848,7 @@ function testParse(code, syntax) {
         actual = JSON.stringify(sortObject(tree), adjustRegexLiteral, 4);
 
         // Only to ensure that there is no error when using string object.
-        reflect.parse(new StringObject(code), options);
+        bs.parse(new StringObject(code), options);
 
     } catch (e) {
         throw new NotMatchingError(expected, e.toString());
@@ -17065,7 +16894,7 @@ function testError(code, exception) {
     for (i = 0; i < options.length; i += 1) {
 
         try {
-            reflect.parse(code, options[i]);
+            bs.parse(code, options[i]);
         } catch (e) {
             actual = JSON.stringify(sortObject(errorToObject(e)));
         }
@@ -17092,9 +16921,9 @@ function testAPI(code, result) {
     expected = JSON.stringify(result.result, null, 4);
     try {
         if (typeof result.property !== 'undefined') {
-            res = reflect[result.property];
+            res = bs[result.property];
         } else {
-            res = reflect[result.call].apply(reflect, result.args);
+            res = bs[result.call].apply(bs, result.args);
         }
         actual = JSON.stringify(res, adjustRegexLiteral, 4);
     } catch (e) {
@@ -17188,7 +17017,7 @@ if (typeof window !== 'undefined') {
             report.appendChild(e);
         }
 
-        setText(document.getElementById('version'), reflect.version);
+        setText(document.getElementById('version'), bs.version);
 
         tick = new Date();
         for (category in data) {

@@ -1,32 +1,31 @@
 {
-  "author": "Zach Carter <zach@carter.name> (http://zaa.ch)",
-  "name": "reflect",
-  "description": "JavaScript parser adhering to Mozilla's parser API",
-  "version": "0.1.3",
+  "author": "Matt Basta",
+  "name": "bscript",
+  "description": "A JavaScript dialect that adds some useful crap.",
+  "version": "0.1.0",
   "keywords": [
     "parser",
     "ast",
-    "reflect",
     "javascript"
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/zaach/reflect.js.git"
+    "url": "git://github.com/mattbasta/reflect.js.git"
   },
   "bugs": {
-    "url": "http://github.com/zaach/reflect.js/issues"
+    "url": "http://github.com/mattbasta/reflect.js/issues"
   },
-  "main": "dist/reflect.js",
   "engines": {
     "node": ">= 0.4"
   },
   "devDependencies": {
     "jison": "0.3.9",
-    "uglify-js": "*"
+    "uglifyjs": "*"
   },
   "scripts": {
     "test": "node test/all-tests.js"
   },
   "dependencies": {},
-  "optionalDependencies": {}
+  "optionalDependencies": {},
+  "main": "dist/"
 }

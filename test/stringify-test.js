@@ -1,6 +1,6 @@
 
-var Reflect = require('../dist/reflect').Reflect;
-var mozBuilder = require('../dist/reflect').mozBuilder;
+var bs = require('../dist/bs');
+var mozBuilder = require('../dist/bs').mozBuilder;
 
 var print = console.log;
 
@@ -23,7 +23,6 @@ function runUnitTests() {
         "void f();\n",
         "[];\n",
         "({});\n",
-        "({1e999: 0});\n",
         ('({get "a b"() {\n' +
          '    return this;\n' +
          '}});\n'),
@@ -80,10 +79,7 @@ function runUnitTests() {
          //"}\n"),
 
         // Reconstituting constant-folded NaNs and Infinities
-        "x = 1e999 + y;\n",
-        "x = y / -1e999;\n",
         "x = 0 / 0;\n",
-        "x = (-1e999).toString();\n",
 
         // Statements
         //("let (x = 1) {\n" +
@@ -238,7 +234,7 @@ function runUnitTests() {
         //"<tag {attr}={value}/>;\n",
         //'<{tag} attr={0}/>;\n',
         //"x.y.@z;\n",
-        ////"x..y..z;\n",  // Reflect.parse doesn't properly support ..
+        ////"x..y..z;\n",  // bs.parse doesn't properly support ..
         ////"x.y..z.w;\n",
         //"x..@y;\n",
         //"x.y.@n::z;\n",
@@ -277,9 +273,9 @@ function runUnitTests() {
     for (var i = 0; i < tests.length; i++) {
         var b = tests[i], a;
         try {
-            a = Reflect.stringify(Reflect.parse(b, {loc: false, builder: mozBuilder}));
+            a = bs.stringify(bs.parse(b, {loc: false, builder: mozBuilder}));
             if (typeof a !== "string") {
-                throw new TypeError("Reflect.stringify returned " +
+                throw new TypeError("bs.stringify returned " +
                                     (a !== null && typeof a === "object"
                                      ? Object.prototype.toString.call(a)
                                      : String(a)) +

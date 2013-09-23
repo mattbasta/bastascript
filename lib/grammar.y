@@ -96,7 +96,6 @@ Keyword
     | VAR
     | VOIDTOKEN
     | WHILE
-    | WITH
     ;
 
 Literal
@@ -273,6 +272,10 @@ CallExpr
       { $$ = yy.Node('CallExpression',$1,$2,yy.loc([@$,@2])); }
     | CallExpr Arguments
       { $$ = yy.Node('CallExpression',$1,$2,yy.loc([@$,@2])); }
+    | MemberExpr SKINNYARROW Arguments
+      { $$ = yy.Node('CurryExpression',$1,$3,yy.loc([@$,@3])); }
+    | CallExpr SKINNYARROW Arguments
+      { $$ = yy.Node('CurryExpression',$1,$3,yy.loc([@$,@3])); }
     | CallExpr '[' Expr ']'
       { $$ = yy.Node('MemberExpression',$1,$3,true,yy.loc([@$,@4])); }
     | CallExpr '.' IdentifierName
@@ -284,6 +287,10 @@ CallExprNoBF
       { $$ = yy.Node('CallExpression',$1,$2,yy.loc([@$,@2])); }
     | CallExprNoBF Arguments
       { $$ = yy.Node('CallExpression',$1,$2,yy.loc([@$,@2])); }
+    | MemberExprNoBF SKINNYARROW Arguments
+      { $$ = yy.Node('CurryExpression',$1,$3,yy.loc([@$,@3])); }
+    | CallExprNoBF SKINNYARROW Arguments
+      { $$ = yy.Node('CurryExpression',$1,$3,yy.loc([@$,@3])); }
     | CallExprNoBF '[' Expr ']'
       { $$ = yy.Node('MemberExpression',$1,$3,true,yy.loc([@$,@4])); }
     | CallExprNoBF '.' IdentifierName
@@ -638,6 +645,7 @@ AssignmentOperator
     | URSHIFTEQUAL
     | ANDEQUAL
     | XOREQUAL
+    | DOTEQUAL
     | OREQUAL
     | MODEQUAL
     ;
@@ -692,7 +700,6 @@ Statement
     | ContinueStatement
     | BreakStatement
     | ReturnStatement
-    | WithStatement
     | SwitchStatement
     | LabeledStatement
     | ThrowStatement
@@ -1021,11 +1028,6 @@ ReturnStatement
       { $$ = yy.Node('ReturnStatement', $2, yy.loc([@$, @3])); }
     | RETURN Expr error
       { $$ = yy.Node('ReturnStatement', $2, yy.loc([@$, ASIloc(@2)])); }
-    ;
-
-WithStatement
-    : WITH '(' Expr ')' Statement
-      { $$ = yy.Node('WithStatement', $Expr, $Statement, yy.loc([@$, @5])); }
     ;
 
 SwitchStatement

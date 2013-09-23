@@ -4,9 +4,9 @@
  * http://creativecommons.org/licenses/publicdomain/
  */
 
-var Reflect = require('../dist/reflect').Reflect;
+var bs = require('../dist/bs');
 var Match = require('./match').Match;
-var mozBuilder = require('../dist/reflect').mozBuilder;
+var mozBuilder = require('../dist/bs').mozBuilder;
 
 var Pattern = Match.Pattern;
 var MatchError = Match.MatchError;
@@ -174,13 +174,6 @@ function labStmt (lab, stmt) {
     return Pattern({
         "type": "LabeledStatement",
         "label": lab,
-        "body": stmt
-    });
-}
-function withStmt (obj, stmt) {
-    return Pattern({
-        "type": "WithStatement",
-        "object": obj,
         "body": stmt
     });
 }
@@ -522,7 +515,7 @@ function xmlCdata (cdata) {
 }
 
 function assertBlockStmt(src, patt) {
-    blockPatt(patt).assert(Reflect.parse(blockSrc(src), {builder: mozBuilder}));
+    blockPatt(patt).assert(bs.parse(blockSrc(src), {builder: mozBuilder}));
 }
 
 function assertBlockExpr(src, patt) {
@@ -530,11 +523,11 @@ function assertBlockExpr(src, patt) {
 }
 
 function assertBlockDecl(src, patt, builder) {
-    blockPatt(patt).assert(Reflect.parse(blockSrc(src), {builder: builder||mozBuilder}));
+    blockPatt(patt).assert(bs.parse(blockSrc(src), {builder: builder||mozBuilder}));
 }
 
 function assertLocalStmt(src, patt) {
-    localPatt(patt).assert(Reflect.parse(localSrc(src), {builder: mozBuilder}));
+    localPatt(patt).assert(bs.parse(localSrc(src), {builder: mozBuilder}));
 }
 
 function assertLocalExpr(src, patt) {
@@ -542,20 +535,20 @@ function assertLocalExpr(src, patt) {
 }
 
 function assertLocalDecl(src, patt) {
-    localPatt(patt).assert(Reflect.parse(localSrc(src), {builder: mozBuilder}));
+    localPatt(patt).assert(bs.parse(localSrc(src), {builder: mozBuilder}));
 }
 
 function assertGlobalStmt(src, patt, builder) {
-    program([patt]).assert(Reflect.parse(src, {builder: builder||mozBuilder}));
+    program([patt]).assert(bs.parse(src, {builder: builder||mozBuilder}));
 }
 
 function assertGlobalExpr(src, patt, builder) {
-    program([exprStmt(patt)]).assert(Reflect.parse(src, {builder: builder||mozBuilder}));
+    program([exprStmt(patt)]).assert(bs.parse(src, {builder: builder||mozBuilder}));
     //assertStmt(src, exprStmt(patt));
 }
 
 function assertGlobalDecl(src, patt) {
-    program([patt]).assert(Reflect.parse(src, {builder: mozBuilder}));
+    program([patt]).assert(bs.parse(src, {builder: mozBuilder}));
 }
 
 function assertStmt(src, patt) {
@@ -582,7 +575,7 @@ function assertDecl(src, patt) {
 
 function assertError(src, errorType) {
     try {
-        Reflect.parse(src);
+        bs.parse(src);
     } catch (expected) {
         if (expected instanceof errorType) {
             return;
@@ -597,11 +590,11 @@ function assertError(src, errorType) {
 
 // NB: These are useful but for now jit-test doesn't do I/O reliably.
 
-//program(_).assert(Reflect.parse(snarf('data/flapjax.txt')));
-//program(_).assert(Reflect.parse(snarf('data/jquery-1.4.2.txt')));
-//program(_).assert(Reflect.parse(snarf('data/prototype.js')));
-//program(_).assert(Reflect.parse(snarf('data/dojo.js.uncompressed.js')));
-//program(_).assert(Reflect.parse(snarf('data/mootools-1.2.4-core-nc.js')));
+//program(_).assert(bs.parse(snarf('data/flapjax.txt')));
+//program(_).assert(bs.parse(snarf('data/jquery-1.4.2.txt')));
+//program(_).assert(bs.parse(snarf('data/prototype.js')));
+//program(_).assert(bs.parse(snarf('data/dojo.js.uncompressed.js')));
+//program(_).assert(bs.parse(snarf('data/mootools-1.2.4-core-nc.js')));
 
 
 // declarations
@@ -638,7 +631,7 @@ assertDecl("function f(a,b,c) { function b() { } }",
 //                    blockStmt([funDecl(ident("b"), [], blockStmt([]))])));
 
 
-program([]).assert(Reflect.parse(""));
+program([]).assert(bs.parse(""));
 // expressions
 assertStmt("{(/[]/,']');/1/}", blockStmt([exprStmt(seqExpr([lit(/[]/),lit("]")])),exprStmt(lit(/1/))]));
 
@@ -773,8 +766,6 @@ assertStmt("if (foo) { throw 1; throw 2; throw 3; } else true;",
                   exprStmt(lit(true))));
 assertStmt("foo: for(;;) break foo;", labStmt(ident("foo"), forStmt(null, null, null, breakStmt(ident("foo")))));
 assertStmt("foo: for(;;) continue foo;", labStmt(ident("foo"), forStmt(null, null, null, continueStmt(ident("foo")))));
-assertStmt("with (obj) { }", withStmt(ident("obj"), blockStmt([])));
-assertStmt("with (obj) { obj; }", withStmt(ident("obj"), blockStmt([exprStmt(ident("obj"))])));
 assertStmt("while (foo) { }", whileStmt(ident("foo"), blockStmt([])));
 assertStmt("while (foo) { foo; }", whileStmt(ident("foo"), blockStmt([exprStmt(ident("foo"))])));
 assertStmt("do { } while (foo);", doStmt(blockStmt([]), ident("foo")));
@@ -1311,42 +1302,41 @@ assertExpr("(<x><!-- hello, world --></x>)()", callExpr(xmlElt([xmlStartTag([xml
 
 // Source location information
 
-var withoutFileOrLine = Reflect.parse("42", {builder: mozBuilder});
-var withFile = Reflect.parse("42", {source:"foo.js", builder: mozBuilder});
-var withFileAndLine = Reflect.parse("42", {source:"foo.js", line:111, builder: mozBuilder});
+var withoutFileOrLine = bs.parse("42", {builder: mozBuilder});
+var withFile = bs.parse("42", {source:"foo.js", builder: mozBuilder});
+var withFileAndLine = bs.parse("42", {source:"foo.js", line:111, builder: mozBuilder});
 
 Pattern({ source: null, start: { line: 1, column: 0 }, end: { line: 1, column: 2 } }).match(withoutFileOrLine.loc);
 Pattern({ source: "foo.js", start: { line: 1, column: 0 }, end: { line: 1, column: 2 } }).match(withFile.loc);
 Pattern({ source: "foo.js", start: { line: 111, column: 0 }, end: { line: 111, column: 2 } }).match(withFileAndLine.loc);
 
-var withoutFileOrLine2 = Reflect.parse("foo +\nbar", {builder: mozBuilder});
-var withFile2 = Reflect.parse("foo +\nbar", {source:"foo.js", builder: mozBuilder});
-var withFileAndLine2 = Reflect.parse("foo +\nbar", {source:"foo.js", line:111, builder: mozBuilder});
+var withoutFileOrLine2 = bs.parse("foo +\nbar", {builder: mozBuilder});
+var withFile2 = bs.parse("foo +\nbar", {source:"foo.js", builder: mozBuilder});
+var withFileAndLine2 = bs.parse("foo +\nbar", {source:"foo.js", line:111, builder: mozBuilder});
 
 Pattern({ source: null, start: { line: 1, column: 0 }, end: { line: 2, column: 3 } }).match(withoutFileOrLine2.loc);
 Pattern({ source: "foo.js", start: { line: 1, column: 0 }, end: { line: 2, column: 3 } }).match(withFile2.loc);
 Pattern({ source: "foo.js", start: { line: 111, column: 0 }, end: { line: 112, column: 3 } }).match(withFileAndLine2.loc);
 
-var nested = Reflect.parse("(-b + sqrt(sqr(b) - 4 * a * c)) / (2 * a)", {source:"quad.js", builder: mozBuilder});
+var nested = bs.parse("(-b + sqrt(sqr(b) - 4 * a * c)) / (2 * a)", {source:"quad.js", builder: mozBuilder});
 var fourAC = nested.body[0].expression.left.right.arguments[0].right;
 
 Pattern({ source: "quad.js", start: { line: 1, column: 20 }, end: { line: 1, column: 29 } }).match(fourAC.loc);
 
 
 // No source location
-if(Reflect.parse("42", {loc:false, builder: mozBuilder}).loc !== null) throw 'not null';
-program([exprStmt(lit(42))]).assert(Reflect.parse("42", {loc:false, builder: mozBuilder}));
+if(bs.parse("42", {loc:false, builder: mozBuilder}).loc !== null) throw 'not null';
+program([exprStmt(lit(42))]).assert(bs.parse("42", {loc:false, builder: mozBuilder}));
 
 
 // Builder tests
-Pattern("program").match(Reflect.parse("42", {builder:{program:function(){return "program"}}}));
+Pattern("program").match(bs.parse("42", {builder:{program:function(){return "program"}}}));
 
 assertGlobalStmt("throw 42", 1, { throwStatement: function(){ return 1 }});
 assertGlobalStmt("for (;;);", 2, { forStatement: function(){ return 2 }});
 assertGlobalStmt("for (x in y);", 3, { forInStatement: function(){ return 3 }});
 assertGlobalStmt("{ }", 4, { blockStatement: function(){ return 4 }});
 assertGlobalStmt("foo: { }", 5, { labeledStatement: function(){ return 5 }});
-assertGlobalStmt("with (o) { }", 6, { withStatement: function(){ return 6 }});
 assertGlobalStmt("while (x) { }", 7, { whileStatement: function(){ return 7 }});
 assertGlobalStmt("do { } while(false);", 8, { doWhileStatement: function(){ return 8 }});
 assertGlobalStmt("switch (x) { }", 9, { switchStatement: function(){ return 9 }});
@@ -1410,7 +1400,7 @@ assertGlobalStmt("try { } catch (e) { }", tryStmt(blockStmt([]), [2], null), { c
 // Ensure that exceptions thrown by builder methods propagate.
 var thrown = false;
 try {
-    Reflect.parse("42", { builder: { program: function() { throw "expected" } } });
+    bs.parse("42", { builder: { program: function() { throw "expected" } } });
 } catch (e) {
     if (e === "expected")
         thrown = true;
@@ -1647,6 +1637,6 @@ Pattern(["Program", {},
           ["LiteralExpr", {value: 2}],
           ["BinaryExpr", {op: "*"},
            ["UnaryExpr", {op: "-"}, ["IdExpr", {name: "x"}]],
-           ["IdExpr", {name: "y"}]]]]).match(Reflect.parse("2 + (-x * y)", {loc: false, builder: JsonMLAst}));
+           ["IdExpr", {name: "y"}]]]]).match(bs.parse("2 + (-x * y)", {loc: false, builder: JsonMLAst}));
 
 

@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+
+function help() {
+    console.log([
+        'Usage:',
+        '  bs <path to script> <options>',
+        '',
+        'Options:',
+        '  --run            Runs the code generated instead of outputting it.'
+    ].join('\n'));
+}
+
+process.title = 'commonplace';
+
+var argv = process.argv.slice(2);
+if (!argv.length) {
+    console.error('Not enough arguments passed.');
+    help();
+    process.exit();
+}
+
+var commonplace = require('../lib/commonplace');
+
+switch (argv[0]) {
+    case 'install':
+        commonplace.install();
+        break;
+    case 'update':
+        commonplace.update();
+        break;
+    case 'clean':
+        commonplace.clean();
+        break;
+    case 'extract_strings':
+        commonplace.extract_l10n();
+        break;
+    case 'langpacks':
+        commonplace.generate_langpacks();
+        break;
+    case 'compile':
+        commonplace.compile();
+        break;
+    case 'includes':
+        commonplace.build_includes();
+        break;
+    case 'help':
+        help();
+        break;
+    default:
+        console.error('Unrecognized command "' + argv[0] + '"');
+        help();
+}
+
