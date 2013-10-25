@@ -2,6 +2,7 @@
 
 function help() {
     console.log([
+        'BastaScript',
         'Usage:',
         '  bs <path to script> <options>',
         '',
@@ -10,7 +11,7 @@ function help() {
     ].join('\n'));
 }
 
-process.title = 'commonplace';
+process.title = 'bastascript';
 
 var argv = process.argv.slice(2);
 if (!argv.length) {
@@ -19,35 +20,21 @@ if (!argv.length) {
     process.exit();
 }
 
-var commonplace = require('../lib/commonplace');
+var bs = require('../dist/bs');
+var script = process.argv[2]
 
-switch (argv[0]) {
-    case 'install':
-        commonplace.install();
-        break;
-    case 'update':
-        commonplace.update();
-        break;
-    case 'clean':
-        commonplace.clean();
-        break;
-    case 'extract_strings':
-        commonplace.extract_l10n();
-        break;
-    case 'langpacks':
-        commonplace.generate_langpacks();
-        break;
-    case 'compile':
-        commonplace.compile();
-        break;
-    case 'includes':
-        commonplace.build_includes();
-        break;
-    case 'help':
-        help();
-        break;
-    default:
-        console.error('Unrecognized command "' + argv[0] + '"');
-        help();
-}
-
+require('fs').readFile(script, function(err, data) {
+    if (err) {
+        console.error('Error reading script: ' + script);
+        console.error(err);
+        process.exit(1);
+        return;
+    }
+    var parsed = bs.parse(data + '');
+    var output = bs.stringify(parsed);
+    if (process.argv.indexOf('--run') !== -1) {
+        require('vm').runInThisContext(output, {}, script);
+    } else {
+        process.stdout.write(output);
+    }
+});

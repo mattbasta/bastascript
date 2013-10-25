@@ -13,10 +13,11 @@ function runUnitTests() {
     var tests = [
         // expressions
         ["x.=y;", 'x = x.y;\n'],
-        ["x->(1,2,3)", 'function() {return x.apply(this,[1,2,3].concat(Array.prototype.slice.call(arguments)));};\n'],
-        ["x.y->(1,2,3)", 'function() {return x.y.apply(x,[1,2,3].concat(Array.prototype.slice.call(arguments)));};\n'],
-        ["x['y']->(1,2,3)", 'function() {return x["y"].apply(x,[1,2,3].concat(Array.prototype.slice.call(arguments)));};\n'],
-
+        ["x->(1,2,3)", 'function(){return x.apply(this,[1,2,3].concat(Array.prototype.slice.call(arguments)));};\n'],
+        ["x.y->(1,2,3)", '(function(___base){return function(){return ___base.y.apply(arguments[0],[1,2,3].concat(Array.prototype.slice.call(arguments)));};})(x);\n'],
+        ["x['y']->(1,2,3)", '(function(___base,___member){return function(){return ___base[___member].apply(___base,[1,2,3].concat(Array.prototype.slice.call(arguments)));};})(x,"y");\n'],
+        ["x=->(1,2,3)", 'x = function(){return x.apply(this,[1,2,3].concat(Array.prototype.slice.call(arguments)));};\n'],
+        ["x.y=->(1,2,3)", 'x.y = (function(___base){return function(){return ___base.y.apply(arguments[0],[1,2,3].concat(Array.prototype.slice.call(arguments)));};})(x);\n'],
     ];
 
     for (var i = 0; i < tests.length; i++) {

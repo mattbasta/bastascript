@@ -620,17 +620,23 @@ AssignmentExpr
     : ConditionalExpr
     | LeftHandSideExpr AssignmentOperator AssignmentExpr
       { $$ = yy.Node('AssignmentExpression', $2, $1, $3,yy.loc([@$,@3])); }
+    | LeftHandSideExpr EQUALSKINNYARROW Arguments
+      { $$ = yy.Node('AssignmentExpression', $2, $1, $3,yy.loc([@$,@3])); }
     ;
 
 AssignmentExprNoIn
     : ConditionalExprNoIn
     | LeftHandSideExpr AssignmentOperator AssignmentExprNoIn
       { $$ = yy.Node('AssignmentExpression', $2, $1, $3,yy.loc([@$,@3])); }
+    | LeftHandSideExpr EQUALSKINNYARROW Arguments
+      { $$ = yy.Node('AssignmentExpression', $2, $1, $3,yy.loc([@$,@3])); }
     ;
 
 AssignmentExprNoBF
     : ConditionalExprNoBF
     | LeftHandSideExprNoBF AssignmentOperator AssignmentExpr
+      { $$ = yy.Node('AssignmentExpression', $2, $1, $3,yy.loc([@$,@3])); }
+    | LeftHandSideExprNoBF EQUALSKINNYARROW Arguments
       { $$ = yy.Node('AssignmentExpression', $2, $1, $3,yy.loc([@$,@3])); }
     ;
 
