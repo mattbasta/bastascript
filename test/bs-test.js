@@ -24,6 +24,9 @@ function runUnitTests() {
 
         // yada yada
         ["...;", "throw new Error('Not Implemented');\n"],
+
+        // for-in-if
+        ["for(var x in y if z(x)) {a += x;}", "for (var x in y)\n    if (z(x)) {\n        a += x;\n    }\n"],
     ];
 
     for (var i = 0; i < tests.length; i++) {

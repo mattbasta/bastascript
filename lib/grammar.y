@@ -950,6 +950,23 @@ IterationStatement
     | FOR '(' VarOrLetInitNoIn Expr ')' Statement
       { $$ = yy.Node('ForInStatement', $3,
                   $Expr, $Statement, false, yy.loc([@$,@6])); }
+    | FOR '(' LeftHandSideExpr INTOKEN Expr ForCondExpr ')' Statement
+      { $$ = yy.Node('ForInStatement', $LeftHandSideExpr, $Expr,
+                yy.Node('IfStatement', $ForCondExpr, $Statement, null, yy.loc([@5, @6])),
+                false, yy.loc([@$,@7])); }
+    | FOR '(' VarOrLet Expr ForCondExpr ')' Statement
+      { $$ = yy.Node('ForInStatement', $3, $Expr,
+                yy.Node('IfStatement', $ForCondExpr, $Statement, null, yy.loc([@4, @5])),
+                false, yy.loc([@$,@6])); }
+    | FOR '(' VarOrLetInitNoIn Expr ForCondExpr ')' Statement
+      { $$ = yy.Node('ForInStatement', $3, $Expr,
+                yy.Node('IfStatement', $ForCondExpr, $Statement, null, yy.loc([@4, $5])),
+                false, yy.loc([@$,@6])); }
+    ;
+
+ForCondExpr
+    : IF Expr
+        { $$ = $Expr; }
     ;
 
 VarOrLet

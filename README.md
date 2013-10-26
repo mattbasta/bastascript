@@ -74,6 +74,25 @@ if (someCondition) {
 ```
 
 
+### For-In-If Loops
+
+```js
+for (var i in foo) {
+    if (foo.hasOwnProperty(i)) {
+        console.log(i);
+    }
+}
+```
+
+can be written as
+
+```
+for (var i in foo if foo.hasOwnProperty(i)) {
+    console.log(i);
+}
+```
+
+
 ## Differences from JavaScript
 
 - There is no `with` statement.
