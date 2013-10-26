@@ -10,17 +10,17 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/mattbasta/reflect.js.git"
+    "url": "git://github.com/mattbasta/bastascript.git"
   },
   "bugs": {
-    "url": "http://github.com/mattbasta/reflect.js/issues"
+    "url": "http://github.com/mattbasta/bastascript/issues"
   },
   "engines": {
     "node": ">= 0.4"
   },
   "devDependencies": {
     "jison": "0.3.9",
-    "uglifyjs": "*"
+    "uglify-js": "2.4.x"
   },
   "scripts": {
     "test": "node test/all-tests.js"
