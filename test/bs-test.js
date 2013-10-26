@@ -21,6 +21,9 @@ function runUnitTests() {
         ["x=->(1,2,3)", 'x = function(){return x.apply(this,[1,2,3].concat(Array.prototype.slice.call(arguments)));};\n'],
         ["x->()", "x;\n"],
         ["x.y->()", "x.y.bind(x);\n"],
+
+        // yada yada
+        ["...;", "throw new Error('Not Implemented');\n"],
     ];
 
     for (var i = 0; i < tests.length; i++) {

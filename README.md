@@ -44,8 +44,8 @@ Currying can be simulated like this:
 function myfunc(x, y, z) {...;}
 
 var curr = myfunc->();
-curr =->(1)
-curr = curr->(2)
+curr =->(1);
+curr = curr->(2);
 console.log(curr(3));
 ```
 
@@ -54,13 +54,24 @@ Creating a partial function preserves the context of members. For instance:
 ```
 var x = foo.bar.bind(foo);
 // equivalent to
-var x = foo.bar->()
+var x = foo.bar->();
 ```
 
 
 ### Member Augmented Assignment
 
 `x = x.y` can be written as `x .= y`.
+
+
+### Yada Yada Operator
+
+`...;` will throw a new error named "Not Implemented".
+
+```
+if (someCondition) {
+   ...;
+}
+```
 
 
 ## Differences from JavaScript

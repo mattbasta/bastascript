@@ -704,6 +704,7 @@ Statement
     | IfStatement
     | IterationStatement
     | ContinueStatement
+    | YadaYadaStatement
     | BreakStatement
     | ReturnStatement
     | SwitchStatement
@@ -999,6 +1000,11 @@ ExprNoInOpt
     :
       { $$ = null }
     | ExprNoIn
+    ;
+
+YadaYadaStatement
+    : YADAYADA ';'
+      { $$ = yy.Node('YadaYadaStatement', yy.loc([@$, @2])); }
     ;
 
 ContinueStatement
