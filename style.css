@@ -1,0 +1,98 @@
+@import url(http://fonts.googleapis.com/css?family=Share+Tech);
+
+* {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    background: #fff;
+    font-family: sans-serif;
+}
+
+header {
+    background: #1E92B2;
+    border-bottom: 1px solid #0C6E89;
+    color: #fff;
+    padding: 45px 0;
+    text-align: center;
+}
+
+header > * {
+    display: block;
+    margin: 0 auto;
+}
+
+nav {
+    background: #f6f6f6;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 0 3px #ddd;
+    line-height: 40px;
+    position: sticky;
+    text-align: center;
+    top: 0;
+}
+
+nav a {
+    color: #666;
+    padding: 0 40px;
+}
+
+h1, h2 {
+    font-family: Share Tech, sans-serif;
+    font-weight: bold;
+}
+
+h1 {font-size: 40px;}
+
+header h1 {
+    font-size: 60px;
+}
+
+section h1, section h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+main {
+    margin: 0 auto;
+    max-width: 1024px;
+    padding: 40px;
+}
+
+section {
+    padding-bottom: 40px;
+}
+
+p {
+    line-height: 1.5em;
+    margin-bottom: 1em;
+}
+
+.half {
+    display: inline-block;
+    padding-right: 10px;
+    vertical-align: top;
+    width: 50%;
+}
+.half + .half {
+    padding: 0 0 0 10px;
+}
+
+#try textarea {
+    background: #fafafa;
+    border: 1px solid #999;
+    border-radius: 5px;
+    box-shadow: 0 1px 0 #eee;
+    height: 300px;
+    padding: 1em;
+    width: 100%;
+}
+
+#try button {
+    display: block;
+    margin: 0 auto;
+    padding: 0.5em 30px;
+}

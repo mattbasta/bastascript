@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Bastascript</title>
+  <link type="text/css" rel="stylesheet" href="/style.css">
+</head>
+<body class="home">
+<header>
+  <h1>Bastascript</h1>
+</header>
+<nav>
+  <a href="#about">About</a>
+  <a href="#try">Try</a>
+  <a href="#contribute">Contribute</a>
+</nav>
+<main>
+  <section id="about">
+    <h1>About</h1>
+    <p>Bastascript is a dialect of JavaScript which enables simple, idiomatic functional programming. Unlike JS, Bastascript contains tools for writing terse, yet powerful code.</p>
+    <p>Concurrent and highly asynchronous languages like JavaScript have a traditionally verbose syntax, requiring numerous closures and nested constructs to accomplish simple goals. Bastascript is designed to extend JS such that these patterns can be reduced to single statements or expressions.</p>
+  </section>
+  <section id="try">
+    <h1>Try</h1>
+    <div class="half">
+      <h2>Bastascript</h2>
+<textarea id="input">
+// Partial functions
+var log = console.log->();
+
+var foo = {bar: 123};
+// Member augmented assignment
+foo .= bar;
+
+log(foo);
+
+if (foo) {
+  // Yada yada operator
+  ...;
+}
+
+// for-in-if loops
+for (var i in foo if foo.hasOwnProperty(i)) {
+  log(i);
+}
+</textarea>
+      <button>Convert</button>
+    </div><div class="half">
+      <h2>JavaScript</h2>
+      <textarea id="output"></textarea>
+    </div>
+  </section>
+  <section id="contribute">
+    <h1>Contribute</h1>
+    <p>Want to get involved in the development of Bastascript? Check out these resources to get started:</p>
+    <ul>
+      <li><a href="https://github.com/mattbasta/bastascript">The Bastascript Github repository</a></li>
+      <li><a href="https://github.com/mattbasta/bastascript/issues">Issue tracker</a></li>
+      <li><a href="https://github.com/zaach/reflect.js">Reflect.js: The JS parser that Bastascript is based on</a></li>
+    </ul>
+  </section>
+</main>
+<script src="bs.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
