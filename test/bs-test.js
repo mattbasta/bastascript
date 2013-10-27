@@ -27,6 +27,9 @@ function runUnitTests() {
 
         // for-in-if
         ["for(var x in y if z(x)) {a += x;}", "for (var x in y)\n    if (z(x)) {\n        a += x;\n    }\n"],
+
+        // method assignment
+        ["function x.y (a,b){}", "x.y = function (a, b) {\n};\n"]
     ];
 
     for (var i = 0; i < tests.length; i++) {

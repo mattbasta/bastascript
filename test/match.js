@@ -53,8 +53,8 @@ var Match =
                 return this.match(act);
             }
             catch (e) {
-            console.log(act);
-            console.log(this.template);
+                console.log(JSON.stringify(act, null, "  "));
+                console.log(JSON.stringify(this.template, null, "  "));
                 if (e instanceof MatchError)
                     throw new Error((message || "failed match") + ": " + e.message);
                 else throw e;

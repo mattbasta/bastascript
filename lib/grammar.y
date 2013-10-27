@@ -255,6 +255,13 @@ MemberExprNoBF
       { $$ = yy.Node('NewExpression',$MemberExpr,$Arguments,yy.loc([@$,@3])); }
     ;
 
+MemberExprDotOnly
+    : IdentifierName
+      { $$ = yy.Node('Identifier', String($$), yy.loc(@$)); }
+    | MemberExprDotOnly '.' IdentifierName
+      { $$ = yy.Node('MemberExpression',$1,yy.Node('Identifier', String($3), yy.loc(@3)),false,yy.loc([@$,@3])); }
+    ;
+
 NewExpr
     : MemberExpr
     | NEW NewExpr
@@ -952,15 +959,15 @@ IterationStatement
                   $Expr, $Statement, false, yy.loc([@$,@6])); }
     | FOR '(' LeftHandSideExpr INTOKEN Expr ForCondExpr ')' Statement
       { $$ = yy.Node('ForInStatement', $LeftHandSideExpr, $Expr,
-                yy.Node('IfStatement', $ForCondExpr, $Statement, null, yy.loc([@5, @6])),
+                yy.Node('IfStatement', $ForCondExpr, $Statement, null, yy.loc(@5)),
                 false, yy.loc([@$,@7])); }
     | FOR '(' VarOrLet Expr ForCondExpr ')' Statement
       { $$ = yy.Node('ForInStatement', $3, $Expr,
-                yy.Node('IfStatement', $ForCondExpr, $Statement, null, yy.loc([@4, @5])),
+                yy.Node('IfStatement', $ForCondExpr, $Statement, null, yy.loc(@4)),
                 false, yy.loc([@$,@6])); }
     | FOR '(' VarOrLetInitNoIn Expr ForCondExpr ')' Statement
       { $$ = yy.Node('ForInStatement', $3, $Expr,
-                yy.Node('IfStatement', $ForCondExpr, $Statement, null, yy.loc([@4, $5])),
+                yy.Node('IfStatement', $ForCondExpr, $Statement, null, yy.loc(@4)),
                 false, yy.loc([@$,@6])); }
     ;
 
@@ -1131,14 +1138,13 @@ DebuggerStatement
     ;
 
 FunctionDeclaration
-    : FUNCTION IDENT '(' ')' Block
+    : FUNCTION MemberExprDotOnly '(' ')' Block
       { $$ = yy.Node('FunctionDeclaration',
-                yy.Node('Identifier', $2,yy.loc(@2)), [], $Block, false, false, yy.loc([@$,@5]))
+                $MemberExprDotOnly, [], $Block, false, false, yy.loc([@$,@5]))
       }
-    | FUNCTION IDENT '(' FormalParameterList ')' Block
+    | FUNCTION MemberExprDotOnly '(' FormalParameterList ')' Block
       { $$ = yy.Node('FunctionDeclaration',
-                yy.Node('Identifier', $2,yy.loc(@2)),
-                $FormalParameterList, $Block, false, false, yy.loc([@$,@6]))
+                $MemberExprDotOnly, $FormalParameterList, $Block, false, false, yy.loc([@$,@6]))
       }
     ;
 

@@ -105,6 +105,19 @@ for (var i in foo if foo.hasOwnProperty(i)) {
 }
 ```
 
+### Method Declarations
+
+```js
+foo.method = function() {};
+```
+
+can be written as
+
+```
+function foo.method() {
+    ...;
+}
+```
 
 ## Differences from JavaScript
 
