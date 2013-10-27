@@ -6,6 +6,19 @@ subset of JavaScript extended with additional syntax that compiles to
 JavaScript.
 
 
+## Running Bastascript code
+
+You can compile a BS file with the following command:
+
+```bash
+bs file_to_compile.bs
+```
+
+The generated code will be piped to stdout.
+
+Adding the `--run` flag will execute the code after compiling.
+
+
 ## Features
 
 ### Partial Functions/Currying (skinny arrow)
