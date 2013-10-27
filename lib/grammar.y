@@ -262,6 +262,39 @@ MemberExprDotOnly
       { $$ = yy.Node('MemberExpression',$1,yy.Node('Identifier', String($3), yy.loc(@3)),false,yy.loc([@$,@3])); }
     ;
 
+YieldExpr
+    : YIELD
+      { $$ = yy.Node('YieldExpression', null, false, yy.loc(@$)); }
+    | YIELDSTAR
+      { $$ = yy.Node('YieldExpression', null, true, yy.loc(@$)); }
+    | YIELD AssignmentExpr
+      { $$ = yy.Node('YieldExpression', $AssignmentExpr, false, yy.loc([@$, @2])); }
+    | YIELDSTAR AssignmentExpr
+      { $$ = yy.Node('YieldExpression', $AssignmentExpr, true, yy.loc([@$, @2])); }
+    ;
+
+YieldExprNoIn
+    : YIELD
+      { $$ = yy.Node('YieldExpression', null, false, yy.loc(@$)); }
+    | YIELDSTAR
+      { $$ = yy.Node('YieldExpression', null, true, yy.loc(@$)); }
+    | YIELD AssignmentExprNoIn
+      { $$ = yy.Node('YieldExpression', $AssignmentExprNoIn, false, yy.loc([@$, @2])); }
+    | YIELDSTAR AssignmentExprNoIn
+      { $$ = yy.Node('YieldExpression', $AssignmentExprNoIn, true, yy.loc([@$, @2])); }
+    ;
+
+YieldExprNoBF
+    : YIELD
+      { $$ = yy.Node('YieldExpression', null, false, yy.loc(@$)); }
+    | YIELDSTAR
+      { $$ = yy.Node('YieldExpression', null, true, yy.loc(@$)); }
+    | YIELD AssignmentExprNoBF
+      { $$ = yy.Node('YieldExpression', $AssignmentExprNoBF, false, yy.loc([@$, @2])); }
+    | YIELDSTAR AssignmentExprNoBF
+      { $$ = yy.Node('YieldExpression', $AssignmentExprNoBF, true, yy.loc([@$, @2])); }
+    ;
+
 NewExpr
     : MemberExpr
     | NEW NewExpr
@@ -625,6 +658,7 @@ ConditionalExprNoBF
 
 AssignmentExpr
     : ConditionalExpr
+    | YieldExpr
     | LeftHandSideExpr AssignmentOperator AssignmentExpr
       { $$ = yy.Node('AssignmentExpression', $2, $1, $3,yy.loc([@$,@3])); }
     | LeftHandSideExpr EQUALSKINNYARROW Arguments
@@ -633,6 +667,7 @@ AssignmentExpr
 
 AssignmentExprNoIn
     : ConditionalExprNoIn
+    | YieldExprNoIn
     | LeftHandSideExpr AssignmentOperator AssignmentExprNoIn
       { $$ = yy.Node('AssignmentExpression', $2, $1, $3,yy.loc([@$,@3])); }
     | LeftHandSideExpr EQUALSKINNYARROW Arguments
@@ -641,6 +676,7 @@ AssignmentExprNoIn
 
 AssignmentExprNoBF
     : ConditionalExprNoBF
+    | YieldExprNoBF
     | LeftHandSideExprNoBF AssignmentOperator AssignmentExpr
       { $$ = yy.Node('AssignmentExpression', $2, $1, $3,yy.loc([@$,@3])); }
     | LeftHandSideExprNoBF EQUALSKINNYARROW Arguments
@@ -1137,32 +1173,40 @@ DebuggerStatement
       { $$ = yy.Node('DebuggerStatement', yy.loc([@$, ASIloc(@1)])); }
     ;
 
+FunctionStart
+    : FUNCTIONSTAR
+        { $$ = true; }
+    | FUNCTION
+        { $$ = false; }
+    ;
+
+
 FunctionDeclaration
-    : FUNCTION MemberExprDotOnly '(' ')' Block
+    : FunctionStart MemberExprDotOnly '(' ')' Block
       { $$ = yy.Node('FunctionDeclaration',
-                $MemberExprDotOnly, [], $Block, false, false, yy.loc([@$,@5]))
+                $MemberExprDotOnly, [], $Block, $FunctionStart, false, yy.loc([@$,@5]))
       }
-    | FUNCTION MemberExprDotOnly '(' FormalParameterList ')' Block
+    | FunctionStart MemberExprDotOnly '(' FormalParameterList ')' Block
       { $$ = yy.Node('FunctionDeclaration',
-                $MemberExprDotOnly, $FormalParameterList, $Block, false, false, yy.loc([@$,@6]))
+                $MemberExprDotOnly, $FormalParameterList, $Block, $FunctionStart, false, yy.loc([@$,@6]))
       }
     ;
 
 FunctionExpr
-    : FUNCTION '(' ')' Block
-      { $$ = yy.Node('FunctionExpression', null, [], $Block, false, false, yy.loc([@$,@4])); }
-    | FUNCTION '(' FormalParameterList ')' Block
+    : FunctionStart '(' ')' Block
+      { $$ = yy.Node('FunctionExpression', null, [], $Block, $FunctionStart, false, yy.loc([@$,@4])); }
+    | FunctionStart '(' FormalParameterList ')' Block
       { $$ = yy.Node('FunctionExpression', null,
-           $FormalParameterList, $Block, false, false, yy.loc([@$,@5])); }
+           $FormalParameterList, $Block, $FunctionStart, false, yy.loc([@$,@5])); }
 
-    | FUNCTION IDENT '(' ')' Block
+    | FunctionStart IDENT '(' ')' Block
       { $$ = yy.Node('FunctionExpression',
                 yy.Node('Identifier', $2,yy.loc(@2)),
-                [], $Block, false, false, yy.loc([@$,@5])); }
-    | FUNCTION IDENT '(' FormalParameterList ')' Block
+                [], $Block, $FunctionStart, false, yy.loc([@$,@5])); }
+    | FunctionStart IDENT '(' FormalParameterList ')' Block
       { $$ = yy.Node('FunctionExpression',
                 yy.Node('Identifier', $2,yy.loc(@2)),
-                $FormalParameterList, $Block, false, false, yy.loc([@$,@6])); }
+                $FormalParameterList, $Block, $FunctionStart, false, yy.loc([@$,@6])); }
     ;
 
 FormalParameterList

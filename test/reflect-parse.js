@@ -1044,14 +1044,16 @@ assertError("for (const [x,y,z] = 22 in foo);", SyntaxError);
 assertDecl("function inc(x) (x + 1)", funDecl(ident("inc"), [ident("x")], binExpr("+", ident("x"), lit(1))));
 assertExpr("(function(x) (x+1))", funExpr(null, [ident("x")], binExpr("+"), ident("x"), lit(1)));
 
+*/
 // generators
 
-assertDecl("function gen(x) { yield }", genFunDecl(ident("gen"), [ident("x")], blockStmt([exprStmt(yieldExpr(null))])));
-assertExpr("(function(x) { yield })", genFunExpr(null, [ident("x")], blockStmt([exprStmt(yieldExpr(null))])));
-assertDecl("function gen(x) { yield 42 }", genFunDecl(ident("gen"), [ident("x")], blockStmt([exprStmt(yieldExpr(lit(42)))])));
-assertExpr("(function(x) { yield 42 })", genFunExpr(null, [ident("x")], blockStmt([exprStmt(yieldExpr(lit(42)))])));
+assertDecl("function* gen(x) { yield }", genFunDecl(ident("gen"), [ident("x")], blockStmt([exprStmt(yieldExpr(null))])));
+assertExpr("(function*(x) { yield })", genFunExpr(null, [ident("x")], blockStmt([exprStmt(yieldExpr(null))])));
+assertDecl("function* gen(x) { yield 42 }", genFunDecl(ident("gen"), [ident("x")], blockStmt([exprStmt(yieldExpr(lit(42)))])));
+assertExpr("(function*(x) { yield 42 })", genFunExpr(null, [ident("x")], blockStmt([exprStmt(yieldExpr(lit(42)))])));
 
 
+/*
 // comprehensions
 
 assertExpr("[ x         for (x in foo)]",
@@ -1411,9 +1413,9 @@ if (!thrown)
 
 // A simple proof-of-concept that the builder API can be used to generate other
 // formats, such as JsonMLAst:
-// 
+//
 //     http://code.google.com/p/es-lab/wiki/JsonMLASTFormat
-// 
+//
 // It's incomplete (e.g., it doesn't convert source-location information and
 // doesn't use all the direct-eval rules), but I think it proves the point.
 

@@ -68,15 +68,15 @@ function runUnitTests() {
         "[,] = x;\n",
 
         // YieldExpressions are only legal inside function bodies.
-        //("function gen() {\n" +
-         //"    yield 1;\n" +
-         //"}\n"),
+        ("function* gen() {\n" +
+         "    yield 1;\n" +
+         "}\n"),
         //("function gen() {\n" +
          //"    yield (a, b);\n" +
          //"}\n"),
-        //("function gen() {\n" +
-         //"    (yield a), b;\n" +
-         //"}\n"),
+        ("function* gen() {\n" +
+         "    (yield a), b;\n" +
+         "}\n"),
 
         // Reconstituting constant-folded NaNs and Infinities
         "x = 0 / 0;\n",
@@ -266,7 +266,7 @@ function runUnitTests() {
          "        eval(\"for(let y in [\\\"\\\", ''])\");\n" +
          "    } catch (ex) {\n" +
          "    }\n" +
-         "    new test3;\n" + 
+         "    new test3;\n" +
          "}\n"),
     ];
 
