@@ -258,8 +258,8 @@ MemberExprNoBF
 MemberExprDotOnly
     : IdentifierName
       { $$ = yy.Node('Identifier', String($$), yy.loc(@$)); }
-    | MemberExprDotOnly '.' IdentifierName
-      { $$ = yy.Node('MemberExpression',$1,yy.Node('Identifier', String($3), yy.loc(@3)),false,yy.loc([@$,@3])); }
+    | IdentifierName '.' MemberExprDotOnly
+      { $$ = yy.Node('MemberExpression',yy.Node('Identifier', String($1), yy.loc(@1)),$3,false,yy.loc([@$,@3])); }
     ;
 
 YieldExpr
@@ -334,6 +334,17 @@ CallExprNoBF
     | CallExprNoBF '[' Expr ']'
       { $$ = yy.Node('MemberExpression',$1,$3,true,yy.loc([@$,@4])); }
     | CallExprNoBF '.' IdentifierName
+      { $$ = yy.Node('MemberExpression',$1,yy.Node('Identifier', String($3), yy.loc(@3)),false,yy.loc([@$,@3])); }
+    ;
+
+CallExprDotOnly
+    : MemberExprDotOnly Arguments
+      { $$ = yy.Node('CallExpression',$1,$2,yy.loc([@$,@2])); }
+    | CallExprDotOnly Arguments
+      { $$ = yy.Node('CallExpression',$1,$2,yy.loc([@$,@2])); }
+    | CallExprDotOnly '[' Expr ']'
+      { $$ = yy.Node('MemberExpression',$1,$3,true,yy.loc([@$,@4])); }
+    | CallExprDotOnly '.' IdentifierName
       { $$ = yy.Node('MemberExpression',$1,yy.Node('Identifier', String($3), yy.loc(@3)),false,yy.loc([@$,@3])); }
     ;
 
@@ -741,6 +752,7 @@ ExprNoBF
 Statement
     : Block
     | VariableStatement
+    | DecoratedFunction
     | FunctionDeclaration
     | EmptyStatement
     | ExprStatement
@@ -1173,13 +1185,27 @@ DebuggerStatement
       { $$ = yy.Node('DebuggerStatement', yy.loc([@$, ASIloc(@1)])); }
     ;
 
+DecoratedFunction
+    : '@' CallExprDotOnly ':' FunctionDeclaration
+      { $$ = yy.Node('DecoratedStatement', $2, $4,
+                     yy.loc([@$, @4])); }
+    | '@' MemberExprDotOnly ':' FunctionDeclaration
+      { $$ = yy.Node('DecoratedStatement', $2, $4,
+                     yy.loc([@$, @4])); }
+    | '@' CallExprDotOnly ':' DecoratedFunction
+      { $$ = yy.Node('DecoratedStatement', $2, $4,
+                     yy.loc([@$, @4])); }
+    | '@' MemberExprDotOnly ':' DecoratedFunction
+      { $$ = yy.Node('DecoratedStatement', $2, $4,
+                     yy.loc([@$, @4])); }
+    ;
+
 FunctionStart
     : FUNCTIONSTAR
         { $$ = true; }
     | FUNCTION
         { $$ = false; }
     ;
-
 
 FunctionDeclaration
     : FunctionStart MemberExprDotOnly '(' ')' Block

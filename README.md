@@ -119,6 +119,43 @@ function foo.method() {
 }
 ```
 
+
+### Decorators
+
+```js
+var myFunc = decorator(function() {
+    // ...
+});
+
+obj.method = decorator(function() {});
+```
+
+can be written as
+
+```
+@decorator:
+function myFunc() {
+    ...;
+}
+
+@decorator:
+function obj.method() {
+    ...;
+}
+```
+
+Decorators can be members or call expressions:
+
+```
+@ident:
+@dec.method:
+@call(foo, bar):
+@dec.call(foo, bar):
+```
+
+Decorators can be chained, and will be applied such that the outermost
+decorator will be applied last.
+
 ## Differences from JavaScript
 
 - There is no `with` statement.
