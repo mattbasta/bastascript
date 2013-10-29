@@ -37,6 +37,20 @@ function runUnitTests() {
         ["@dec:\nfunction abc.def() {}", "abc.def = dec(function () {\n});\n"],
         ["@dec:\n@dec2:\nfunction abc.def() {}", "abc.def = dec(dec2(function () {\n}));\n"],
         ["@foo.bar:\n@call():\nfunction bar() {}", "var bar = foo.bar(call()(function () {\n}));\n"],
+
+        // later
+        ["function foo(){later alert('done');x+=1;}",
+         "function foo(){\n" +
+         "    var ___later = [];\n" +
+         "    var ___output = (function() {\n" +
+         "        ___later.push(function() {\n" +
+         "            alert(\"done\");\n" +
+         "        }.bind(this));\n" +
+         "        x += 1;\n" +
+         "    }).call(this);\n" +
+         "    while (___later.length) ___later.shift()();\n" +
+         "    return ___output;\n" +
+         "}\n"],
     ];
 
     for (var i = 0; i < tests.length; i++) {

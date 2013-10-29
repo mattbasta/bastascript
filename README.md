@@ -156,6 +156,30 @@ Decorators can be members or call expressions:
 Decorators can be chained, and will be applied such that the outermost
 decorator will be applied last.
 
+
+### `later` Statement
+
+The `later` statement allows you to defer a statement's execution until after
+the completion of the remainder of the function.
+
+```
+function test(shouldMock) {
+    if (shouldMock) {
+        mock();
+        later cleanup();
+    }
+    ...;
+}
+```
+
+`later` statements retain lexical scope and their access to the `this`
+identifier. `later` statements will not presently work with generators.
+
+If an exception is thrown in a function with `later` statements, none of the
+deferred statements will be executed. You should catch exceptions with `try`
+blocks instead.
+
+
 ## Differences from JavaScript
 
 - There is no `with` statement.

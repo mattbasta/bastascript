@@ -51,15 +51,17 @@ function lit (val) {
     });
 }
 var thisExpr = Pattern({
-        "type": "ThisExpression"
-    });
+    "type": "ThisExpression"
+});
 function funDecl (id, params, body) {
     return Pattern({
         "type": "FunctionDeclaration",
         "id": id,
         "params": params,
         "body": body,
-        "generator": false
+        "generator": false,
+        "expression": false,
+        "later": false
     });
 }
 function genFunDecl (id, params, body) {
@@ -68,7 +70,9 @@ function genFunDecl (id, params, body) {
         "id": id,
         "params": params,
         "body": body,
-        "generator": true
+        "generator": true,
+        "expression": false,
+        "later": false
     });
 }
 function varDecl (decls) {
@@ -241,7 +245,9 @@ function funExpr (id, args, body, gen) {
         "id": id,
         "params": args,
         "body": body,
-        "generator": false
+        "generator": false,
+        "expression": false,
+        "later": false
     });
 }
 function genFunExpr (id, args, body) {
@@ -250,7 +256,9 @@ function genFunExpr (id, args, body) {
         "id": id,
         "params": args,
         "body": body,
-        "generator": true
+        "generator": true,
+        "expression": false,
+        "later": false
     });
 }
 function unExpr (op, arg) {

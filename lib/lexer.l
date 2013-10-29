@@ -149,6 +149,7 @@ EIDP [\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\
 "if"                                                               return 'IF'
 "in"                                                               return 'INTOKEN'
 "instanceof"                                                       return 'INSTANCEOF'
+"later"                                                            return 'LATER'
 "new"                                                              return 'NEW'
 "return"                                                           return 'RETURN'
 "switch"                                                           return 'SWITCH'

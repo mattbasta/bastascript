@@ -140,29 +140,33 @@ Property
       {
           if ($1 !== 'get' && $1 !== 'set') throw new Error('Parse error, invalid set/get.'); // TODO: use jison ABORT when supported
           @$ = yy.locComb(@1,@5);
-          var fun = yy.Node('FunctionExpression',null,[],$Block, false, false, yy.loc(@5));
+          var fun = yy.Node('FunctionExpression',null,[],$Block, false, false, yy.isLater, yy.loc(@5));
           $$ = yy.Node('Property', yy.Node('Identifier', $2,yy.loc(@2)),fun,$1, yy.loc(@$));
+          yy.isLater = false;
       }
     | IDENT IdentifierName '(' FormalParameterList ')' Block
       {
           @$ = yy.locComb(@1,@6);
           if ($1 !== 'get' && $1 !== 'set') throw new Error('Parse error, invalid set/get.'); // TODO: use jison ABORT when supported
-          var fun = yy.Node('FunctionExpression',null,$FormalParameterList,$Block,false,false,yy.loc(@6));
+          var fun = yy.Node('FunctionExpression',null,$FormalParameterList,$Block,false,false,yy.isLater,yy.loc(@6));
           $$ = yy.Node('Property', yy.Node('Identifier', $2,yy.loc(@2)),fun,$1, yy.loc(@$));
+          yy.isLater = false;
       }
     | IDENT KeyLiteral '(' ')' Block
       {
           if ($1 !== 'get' && $1 !== 'set') throw new Error('Parse error, invalid set/get.'); // TODO: use jison ABORT when supported
           @$ = yy.locComb(@1,@5);
-          var fun = yy.Node('FunctionExpression',null,[],$Block, false, false, yy.loc(@5));
+          var fun = yy.Node('FunctionExpression',null,[],$Block, false, false, yy.isLater, yy.loc(@5));
           $$ = yy.Node('Property', $2,fun,$1,yy.loc(@$));
+          yy.isLater = false;
       }
     | IDENT KeyLiteral '(' FormalParameterList ')' Block
       {
           @$ = yy.locComb(@1,@6);
           if ($1 !== 'get' && $1 !== 'set') throw new Error('Parse error, invalid set/get.'); // TODO: use jison ABORT when supported
-          var fun = yy.Node('FunctionExpression',null,$FormalParameterList,$Block,false,false,yy.loc(@6));
+          var fun = yy.Node('FunctionExpression',null,$FormalParameterList,$Block,false,false,yy.isLater,yy.loc(@6));
           $$ = yy.Node('Property', $2,fun,$1,yy.loc(@$));
+          yy.isLater = false;
       }
     ;
 
@@ -755,18 +759,28 @@ Statement
     | DecoratedFunction
     | FunctionDeclaration
     | EmptyStatement
-    | ExprStatement
-    | IfStatement
-    | IterationStatement
     | ContinueStatement
-    | YadaYadaStatement
     | BreakStatement
     | ReturnStatement
+    | LaterStatement
+    | NonLaterStatement
+    ;
+
+NonLaterStatement
+    : ExprStatement
+    | IfStatement
+    | IterationStatement
+    | YadaYadaStatement
     | SwitchStatement
     | LabeledStatement
     | ThrowStatement
     | TryStatement
     | DebuggerStatement
+    ;
+
+LaterStatement
+    : LATER NonLaterStatement
+        { $$ = yy.Node('LaterStatement', $2, yy.loc([@$, @2])), yy.isLater = true; }
     ;
 
 Block
@@ -1210,29 +1224,44 @@ FunctionStart
 FunctionDeclaration
     : FunctionStart MemberExprDotOnly '(' ')' Block
       { $$ = yy.Node('FunctionDeclaration',
-                $MemberExprDotOnly, [], $Block, $FunctionStart, false, yy.loc([@$,@5]))
+                $MemberExprDotOnly, [], $Block, $FunctionStart, false,
+                yy.isLater, yy.loc([@$,@5]));
+        yy.isLater = false;
       }
     | FunctionStart MemberExprDotOnly '(' FormalParameterList ')' Block
       { $$ = yy.Node('FunctionDeclaration',
-                $MemberExprDotOnly, $FormalParameterList, $Block, $FunctionStart, false, yy.loc([@$,@6]))
+                $MemberExprDotOnly, $FormalParameterList, $Block,
+                $FunctionStart, false, yy.isLater, yy.loc([@$,@6]));
+        yy.isLater = false;
       }
     ;
 
 FunctionExpr
     : FunctionStart '(' ')' Block
-      { $$ = yy.Node('FunctionExpression', null, [], $Block, $FunctionStart, false, yy.loc([@$,@4])); }
+      { $$ = yy.Node('FunctionExpression', null, [], $Block,
+                $FunctionStart, false, yy.isLater, yy.loc([@$,@4]));
+        yy.isLater = false;
+      }
     | FunctionStart '(' FormalParameterList ')' Block
       { $$ = yy.Node('FunctionExpression', null,
-           $FormalParameterList, $Block, $FunctionStart, false, yy.loc([@$,@5])); }
+                $FormalParameterList, $Block,
+                $FunctionStart, false, yy.isLater, yy.loc([@$,@5]));
+        yy.isLater = false;
+      }
 
     | FunctionStart IDENT '(' ')' Block
       { $$ = yy.Node('FunctionExpression',
                 yy.Node('Identifier', $2,yy.loc(@2)),
-                [], $Block, $FunctionStart, false, yy.loc([@$,@5])); }
+                [], $Block, $FunctionStart, false, yy.isLater, yy.loc([@$,@5]));
+        yy.isLater = false;
+      }
     | FunctionStart IDENT '(' FormalParameterList ')' Block
       { $$ = yy.Node('FunctionExpression',
                 yy.Node('Identifier', $2,yy.loc(@2)),
-                $FormalParameterList, $Block, $FunctionStart, false, yy.loc([@$,@6])); }
+                $FormalParameterList, $Block,
+                $FunctionStart, false, yy.isLater, yy.loc([@$,@6]));
+        yy.isLater = false;
+      }
     ;
 
 FormalParameterList
