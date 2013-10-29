@@ -34,15 +34,29 @@ foo .= bar;
 
 log(foo);
 
-if (foo) {
+if (!foo) {
   // Yada yada operator
   ...;
 }
 
 // for-in-if loops
-for (var i in foo if foo.hasOwnProperty(i)) {
+var obj = {a: 1, b: 2};
+for (var i in obj if obj.hasOwnProperty(i)) {
   log(i);
 }
+
+function decorator(func) {
+  return function() {
+    log(func());
+  };
+}
+
+@decorator:
+function foo.test() {
+  later log('logging this after saying hello');
+  return 'hello console!';
+}
+
 </textarea>
       <button>Convert</button>
     </div><div class="half">
