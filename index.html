@@ -53,7 +53,9 @@ function decorator(func) {
 
 @decorator:
 function foo.test() {
-  later log('logging this after saying hello');
+  later log('logging this after warning the user');
+
+  console.warn('oh no here comes a greeting');
   return 'hello console!';
 }
 
