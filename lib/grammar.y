@@ -1126,6 +1126,16 @@ ReturnStatement
       { $$ = yy.Node('ReturnStatement', $2, yy.loc([@$, @3])); }
     | RETURN Expr error
       { $$ = yy.Node('ReturnStatement', $2, yy.loc([@$, ASIloc(@2)])); }
+    | RETURN UNLESS Expr ';'
+      { $$ = yy.Node('IfStatement',
+            yy.Node('UnaryExpression', '!', $3, true, yy.loc(@2)),
+            yy.Node('ReturnStatement', null, yy.loc(@$)),
+            null, yy.loc([@$, @4])); }
+    | RETURN Expr UNLESS Expr ';'
+      { $$ = yy.Node('IfStatement',
+            yy.Node('UnaryExpression', '!', $4, true, yy.loc(@2)),
+            yy.Node('ReturnStatement', $2, yy.loc([@$, @2])),
+            null, yy.loc([@$, @5])); }
     ;
 
 SwitchStatement

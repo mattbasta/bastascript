@@ -164,6 +164,7 @@ EIDP [\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\
 "let"                                                              return 'LET'
 "yield*"                                                           return 'YIELDSTAR'
 "yield"                                                            return 'YIELD'
+"unless"                                                           return 'UNLESS'
 "this"                                                             return 'THISTOKEN'
 "true"                                                             return 'TRUETOKEN'
 "false"                                                            return 'FALSETOKEN'

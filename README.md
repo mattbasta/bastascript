@@ -180,6 +180,24 @@ deferred statements will be executed. You should catch exceptions with `try`
 blocks instead.
 
 
+### return-unless Statements
+
+Return statements support a ruby-like `unless` clause that expands out to an
+`if (!expr)` construct:
+
+```
+return foo unless bar;
+```
+
+vs.
+
+```js
+if (!bar) {
+    return foo;
+}
+```
+
+
 ## Differences from JavaScript
 
 - There is no `with` statement.

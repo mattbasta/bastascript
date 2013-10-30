@@ -51,6 +51,10 @@ function runUnitTests() {
          "    while (___later.length) ___later.shift()();\n" +
          "    return ___output;\n" +
          "}\n"],
+
+         // return-unless
+         ["return unless y;", "if (!y)\n    return;\n"],
+         ["return x unless y;", "if (!y)\n    return x;\n"],
     ];
 
     for (var i = 0; i < tests.length; i++) {
