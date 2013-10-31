@@ -129,7 +129,7 @@ var myFunc = decorator(function() {
     // ...
 });
 
-obj.method = decorator(function() {});
+obj.method = decorator(function method() {});
 ```
 
 can be written as
