@@ -1136,6 +1136,14 @@ ReturnStatement
             yy.Node('UnaryExpression', '!', $4, true, yy.loc(@2)),
             yy.Node('ReturnStatement', $2, yy.loc([@$, @2])),
             null, yy.loc([@$, @5])); }
+    | RETURN IF Expr ';'
+      { $$ = yy.Node('IfStatement', $3,
+            yy.Node('ReturnStatement', null, yy.loc(@$)),
+            null, yy.loc([@$, @4])); }
+    | RETURN Expr IF Expr ';'
+      { $$ = yy.Node('IfStatement', $4,
+            yy.Node('ReturnStatement', $2, yy.loc([@$, @2])),
+            null, yy.loc([@$, @5])); }
     ;
 
 SwitchStatement

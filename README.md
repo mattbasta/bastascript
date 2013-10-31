@@ -182,19 +182,24 @@ deferred statements will be executed. You should catch exceptions with `try`
 blocks instead.
 
 
-### return-unless Statements
+### return-unless and return-if statements
 
 Return statements support a ruby-like `unless` clause that expands out to an
-`if (!expr)` construct:
+`if (!expr)` construct. They may also use `if`, which expands out to
+`if (expr)`.
 
 ```
 return foo unless bar;
+return foo if bar;
 ```
 
 vs.
 
 ```js
 if (!bar) {
+    return foo;
+}
+if (bar) {
     return foo;
 }
 ```

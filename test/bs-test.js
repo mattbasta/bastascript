@@ -56,6 +56,10 @@ function runUnitTests() {
          ["return unless y;", "if (!y)\n    return;\n"],
          ["return x unless y;", "if (!y)\n    return x;\n"],
 
+         // return-if
+         ["return if y;", "if (y)\n    return;\n"],
+         ["return x if y;", "if (y)\n    return x;\n"],
+
          // function shorthand
          ["ƒ x() {return 123;}", "function x() {\n    return 123;\n}\n"],
          ["ƒ* x() {yield 123;}", "function* x() {\n    yield 123;\n}\n"],
