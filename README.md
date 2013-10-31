@@ -200,6 +200,24 @@ if (!bar) {
 ```
 
 
+### Function shorthand
+
+The `function` keyword can be replaced with the unicode character `ƒ`. This
+also works with generators: `ƒ*`.
+
+```
+ƒ foo() {
+    ...;
+}
+```
+
+```js
+function foo() {
+    // ...;
+}
+```
+
+
 ## Differences from JavaScript
 
 - There is no `with` statement.
