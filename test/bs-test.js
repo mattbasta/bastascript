@@ -29,14 +29,14 @@ function runUnitTests() {
         ["for(var x in y if z(x)) {a += x;}", "for (var x in y)\n    if (z(x)) {\n        a += x;\n    }\n"],
 
         // method assignment
-        ["function x.y (a,b){}", "x.y = function (a, b) {\n};\n"],
+        ["function x.y (a,b){}", "x.y = function y(a, b) {\n};\n"],
 
         // decorators
-        ["@dec:\nfunction foo(a, b) {}", "var foo = dec(function (a, b) {\n});\n"],
-        ["@dec.foo(1,2):\nfunction bar() {}", "var bar = dec.foo(1, 2)(function () {\n});\n"],
-        ["@dec:\nfunction abc.def() {}", "abc.def = dec(function () {\n});\n"],
-        ["@dec:\n@dec2:\nfunction abc.def() {}", "abc.def = dec(dec2(function () {\n}));\n"],
-        ["@foo.bar:\n@call():\nfunction bar() {}", "var bar = foo.bar(call()(function () {\n}));\n"],
+        ["@dec:\nfunction foo(a, b) {}", "var foo = dec(function foo(a, b) {\n});\n"],
+        ["@dec.foo(1,2):\nfunction bar() {}", "var bar = dec.foo(1, 2)(function bar() {\n});\n"],
+        ["@dec:\nfunction abc.def() {}", "abc.def = dec(function def() {\n});\n"],
+        ["@dec:\n@dec2:\nfunction abc.def() {}", "abc.def = dec(dec2(function def() {\n}));\n"],
+        ["@foo.bar:\n@call():\nfunction bar() {}", "var bar = foo.bar(call()(function bar() {\n}));\n"],
 
         // later
         ["function foo(){later alert('done');x+=1;}",

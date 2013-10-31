@@ -108,7 +108,7 @@ for (var i in foo if foo.hasOwnProperty(i)) {
 ### Method Declarations
 
 ```js
-foo.method = function() {};
+foo.method = function method() {};
 ```
 
 can be written as
@@ -118,6 +118,8 @@ function foo.method() {
     ...;
 }
 ```
+
+Note that the method name is preserved.
 
 
 ### Decorators
