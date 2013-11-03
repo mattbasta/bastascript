@@ -1,6 +1,6 @@
 {
   "author": "Matt Basta",
-  "name": "bscript",
+  "name": "bastascript",
   "description": "A JavaScript dialect that adds some useful crap.",
   "version": "0.2.0",
   "keywords": [
