@@ -27,5 +27,6 @@
   },
   "dependencies": {},
   "optionalDependencies": {},
-  "main": "dist/bs.js"
+  "main": "dist/bs.js",
+  "license": "MIT"
 }
