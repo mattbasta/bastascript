@@ -236,9 +236,11 @@ y = elements.map(e => e.getAttribute('name'));
 vs.
 
 ```js
-x = function() {return foo;}.bind(this);
-y = elements.map(function(e) {return e.getAttribute('name')}.bind(this));
+x = function() {return foo;};
+y = elements.map(function(e) {return e.getAttribute('name')});
 ```
+
+Arrow functions will bind `this` lexically (as in ES6) when `this` is used.
 
 Note that `later` statements are not bound to arrow functions and instead are
 bound to the lexical parent. If the arrow function executes after the lexical
