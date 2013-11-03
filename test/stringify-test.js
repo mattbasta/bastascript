@@ -195,20 +195,20 @@ function runUnitTests() {
         ("(function () {\n" +
          "    go();\n" +
          "}());\n"),
-        ("(function () {\n" +
+        ("(function () {" +
          "}.x);\n"),
-        ("(function name() {\n" +
+        ("(function name() {" +
          "}.x);\n"),
-        ("(function () {\n" +
+        ("(function () {" +
          "}.x = 1);\n"),
-        ("(function name() {\n" +
+        ("(function name() {" +
          "}.x = 1);\n"),
-        ("(function () {\n" +
-         "}.x, function () {\n" +
+        ("(function () {" +
+         "}.x, function () {" +
          "}.y);\n"),
-        ("(function () {\n" +
+        ("(function () {" +
          "} + x) * y;\n"),
-        ("(function () {\n" +
+        ("(function () {" +
          "} * x + y);\n"),
         //"(let (t = x) (x = y, y = t));\n",
         //"(let (y = f()) x = y, x += t);\n",
@@ -245,9 +245,7 @@ function runUnitTests() {
 
         // misc
         ('options("tracejit");\n' +
-         "try {\n" +
-         "} catch (e) {\n" +
-         "}\n"),
+         "try {} catch (e) {}\n"),
         ("function test() {\n" +
          "    var s1 = evalcx(\"lazy\");\n" +
          "    expect = function () {\n" +
@@ -258,14 +256,12 @@ function runUnitTests() {
          "    var a = new Array(100000);\n" +
          "    var i = a.length;\n" +
          "    new i(eval(\"var obj = new Object(); obj.split = String.prototype.split;\"));\n" +
-         "} catch (e) {\n" +
-         "}\n"),
+         "} catch (e) {}\n"),
         ("test3();\n" +
          "function test3() {\n" +
          "    try {\n" +
          "        eval(\"for(let y in [\\\"\\\", ''])\");\n" +
-         "    } catch (ex) {\n" +
-         "    }\n" +
+         "    } catch (ex) {}\n" +
          "    new test3;\n" +
          "}\n"),
     ];
@@ -273,7 +269,7 @@ function runUnitTests() {
     for (var i = 0; i < tests.length; i++) {
         var b = tests[i], a;
         try {
-            a = bs.stringify(bs.parse(b, {loc: false, builder: mozBuilder}));
+            a = bs.stringify(bs.parse(b, {loc: false, builder: mozBuilder}), undefined, true);
             if (typeof a !== "string") {
                 throw new TypeError("bs.stringify returned " +
                                     (a !== null && typeof a === "object"
@@ -310,5 +306,4 @@ function /*disscript*/() {
            throw exc;
    }
 });
-
 

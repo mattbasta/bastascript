@@ -672,7 +672,15 @@ ConditionalExprNoBF
     ;
 
 AssignmentExpr
-    : ConditionalExpr
+    : PrimaryExprNoBrace FATARROW AssignmentExprNoBF
+      { $$ = yy.Node('ArrowFunction', yy.parseArrowParams($1), $3, yy.loc([@$, @3])); }
+    | PrimaryExprNoBrace FATARROW Block
+      { $$ = yy.Node('ArrowFunction', yy.parseArrowParams($1), $3, yy.loc([@$, @3])); }
+    | '(' ')' FATARROW AssignmentExprNoBF
+      { $$ = yy.Node('ArrowFunction', [], $4, yy.loc([@$, @4])); }
+    | '(' ')' FATARROW Block
+      { $$ = yy.Node('ArrowFunction', [], $4, yy.loc([@$, @4])); }
+    | ConditionalExpr
     | YieldExpr
     | LeftHandSideExpr AssignmentOperator AssignmentExpr
       { $$ = yy.Node('AssignmentExpression', $2, $1, $3,yy.loc([@$,@3])); }
@@ -690,7 +698,15 @@ AssignmentExprNoIn
     ;
 
 AssignmentExprNoBF
-    : ConditionalExprNoBF
+    : PrimaryExprNoBrace FATARROW AssignmentExprNoBF
+      { $$ = yy.Node('ArrowFunction', yy.parseArrowParams($1), $3, yy.loc([@$, @3])); }
+    | PrimaryExprNoBrace FATARROW Block
+      { $$ = yy.Node('ArrowFunction', yy.parseArrowParams($1), $3, yy.loc([@$, @3])); }
+    | '(' ')' FATARROW AssignmentExprNoBF
+      { $$ = yy.Node('ArrowFunction', [], $4, yy.loc([@$, @4])); }
+    | '(' ')' FATARROW Block
+      { $$ = yy.Node('ArrowFunction', [], $4, yy.loc([@$, @4])); }
+    | ConditionalExprNoBF
     | YieldExprNoBF
     | LeftHandSideExprNoBF AssignmentOperator AssignmentExpr
       { $$ = yy.Node('AssignmentExpression', $2, $1, $3,yy.loc([@$,@3])); }

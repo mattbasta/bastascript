@@ -223,6 +223,28 @@ function foo() {
 ```
 
 
+### ES6-style Fat Arrow Functions
+
+Fat arrow functions should work as they're documented in [the Harmony wiki](
+http://wiki.ecmascript.org/doku.php?id=harmony:arrow_function_syntax).
+
+```
+x = () => foo;
+y = elements.map(e => e.getAttribute('name'));
+```
+
+vs.
+
+```js
+x = function() {return foo;}.bind(this);
+y = elements.map(function(e) {return e.getAttribute('name')}.bind(this));
+```
+
+Note that `later` statements are not bound to arrow functions and instead are
+bound to the lexical parent. If the arrow function executes after the lexical
+parent has completed, the later statement will not be run.
+
+
 ## Differences from JavaScript
 
 - There is no `with` statement.

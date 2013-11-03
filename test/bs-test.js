@@ -15,7 +15,7 @@ function runUnitTests() {
         ["x.=y;", 'x = x.y;\n'],
         ["x.y=->(1,2,3)", 'x.y = (function(___base){return function(){return ___base.y.apply(arguments[0],[1,2,3].concat(Array.prototype.slice.call(arguments)));};})(x);\n'],
 
-        ["x->(1,2,3)", 'function(){return x.apply(this,[1,2,3].concat(Array.prototype.slice.call(arguments)));};\n'],
+        ["x->(1,2,3)", '(function(){return x.apply(this,[1,2,3].concat(Array.prototype.slice.call(arguments)));});\n'],
         ["x.y->(1,2,3)", '(function(___base){return function(){return ___base.y.apply(arguments[0],[1,2,3].concat(Array.prototype.slice.call(arguments)));};})(x);\n'],
         ["x['y']->(1,2,3)", '(function(___base,___member){return function(){return ___base[___member].apply(___base,[1,2,3].concat(Array.prototype.slice.call(arguments)));};})(x,"y");\n'],
         ["x=->(1,2,3)", 'x = function(){return x.apply(this,[1,2,3].concat(Array.prototype.slice.call(arguments)));};\n'],
@@ -29,14 +29,14 @@ function runUnitTests() {
         ["for(var x in y if z(x)) {a += x;}", "for (var x in y)\n    if (z(x)) {\n        a += x;\n    }\n"],
 
         // method assignment
-        ["function x.y (a,b){}", "x.y = function y(a, b) {\n};\n"],
+        ["function x.y (a,b){}", "x.y = function y(a, b) {};\n"],
 
         // decorators
-        ["@dec:\nfunction foo(a, b) {}", "var foo = dec(function foo(a, b) {\n});\n"],
-        ["@dec.foo(1,2):\nfunction bar() {}", "var bar = dec.foo(1, 2)(function bar() {\n});\n"],
-        ["@dec:\nfunction abc.def() {}", "abc.def = dec(function def() {\n});\n"],
-        ["@dec:\n@dec2:\nfunction abc.def() {}", "abc.def = dec(dec2(function def() {\n}));\n"],
-        ["@foo.bar:\n@call():\nfunction bar() {}", "var bar = foo.bar(call()(function bar() {\n}));\n"],
+        ["@dec:\nfunction foo(a, b) {}", "var foo = dec(function foo(a, b) {});\n"],
+        ["@dec.foo(1,2):\nfunction bar() {}", "var bar = dec.foo(1, 2)(function bar() {});\n"],
+        ["@dec:\nfunction abc.def() {}", "abc.def = dec(function def() {});\n"],
+        ["@dec:\n@dec2:\nfunction abc.def() {}", "abc.def = dec(dec2(function def() {}));\n"],
+        ["@foo.bar:\n@call():\nfunction bar() {}", "var bar = foo.bar(call()(function bar() {}));\n"],
 
         // later
         ["function foo(){later alert('done');x+=1;}",
@@ -63,12 +63,34 @@ function runUnitTests() {
          // function shorthand
          ["ƒ x() {return 123;}", "function x() {\n    return 123;\n}\n"],
          ["ƒ* x() {yield 123;}", "function* x() {\n    yield 123;\n}\n"],
+
+         // Arrow functions
+         ["()=>'test'", "(function() {return \"test\";}.bind(this));\n"],
+         ["x = ()=>'test'", "x = function() {return \"test\";}.bind(this);\n"],
+         ["x=>x", "(function(x) {return x;}.bind(this));\n"],
+         ["x=>x * x", "(function(x) {return x * x;}.bind(this));\n"],
+         ["val=>({key: val})", "(function(val) {return {key: val};}.bind(this));\n"],
+         ["foo.map(v => v + 1)", "foo.map(function(v) {return v + 1;}.bind(this));\n"],
+         ["x = y=>z=>y+z", "x = function(y) {return function(z) {return y + z;}.bind(this);}.bind(this);\n"],
+         ["() => {}", "(function() {}.bind(this));\n"],
+         ["x = y => {return y;}", "x = function(y) {\n    return y;\n}.bind(this);\n"],
     ];
 
     for (var i = 0; i < tests.length; i++) {
         var b = tests[i], a;
         try {
-            a = bs.stringify(bs.parse(b[0], {loc: false, builder: mozBuilder}));
+            a = bs.parse(b[0], {loc: false, builder: mozBuilder});
+        } catch (exc) {
+            print("FAIL - Exception thrown in parse.");
+            print(exc);
+            print(exc.name + ": " + exc.message);
+            print(exc.stack);
+            print("Test was: " + b[0]);
+            print();
+            continue;
+        }
+        try {
+            a = bs.stringify(a, undefined, true);
             if (typeof a !== "string") {
                 throw new TypeError("Reflect.stringify returned " +
                                     (a !== null && typeof a === "object"
@@ -77,7 +99,7 @@ function runUnitTests() {
                                     "; expected string");
             }
         } catch (exc) {
-            print("FAIL - Exception thrown.");
+            print("FAIL - Exception thrown in strigify.");
             print(exc.name + ": " + exc.message);
             print(exc.stack);
             print("Test was: " + b[0]);
