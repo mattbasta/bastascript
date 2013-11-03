@@ -39,13 +39,24 @@ function runUnitTests() {
         ["@foo.bar:\n@call():\nfunction bar() {}", "var bar = foo.bar(call()(function bar() {}));\n"],
 
         // later
+        ["function foo(){later alert(this);}",
+         "function foo(){\n" +
+         "    var ___later = [];\n" +
+         "    var ___output = (function() {\n" +
+         "        ___later.push(function() {\n" +
+         "            alert(this);\n" +
+         "        }.bind(this));\n" +
+         "    }).call(this);\n" +
+         "    while (___later.length) ___later.shift()();\n" +
+         "    return ___output;\n" +
+         "}\n"],
         ["function foo(){later alert('done');x+=1;}",
          "function foo(){\n" +
          "    var ___later = [];\n" +
          "    var ___output = (function() {\n" +
          "        ___later.push(function() {\n" +
          "            alert(\"done\");\n" +
-         "        }.bind(this));\n" +
+         "        });\n" +
          "        x += 1;\n" +
          "    }).call(this);\n" +
          "    while (___later.length) ___later.shift()();\n" +
@@ -65,15 +76,16 @@ function runUnitTests() {
          ["ƒ* x() {yield 123;}", "function* x() {\n    yield 123;\n}\n"],
 
          // Arrow functions
-         ["()=>'test'", "(function() {return \"test\";}.bind(this));\n"],
-         ["x = ()=>'test'", "x = function() {return \"test\";}.bind(this);\n"],
-         ["x=>x", "(function(x) {return x;}.bind(this));\n"],
-         ["x=>x * x", "(function(x) {return x * x;}.bind(this));\n"],
-         ["val=>({key: val})", "(function(val) {return {key: val};}.bind(this));\n"],
-         ["foo.map(v => v + 1)", "foo.map(function(v) {return v + 1;}.bind(this));\n"],
-         ["x = y=>z=>y+z", "x = function(y) {return function(z) {return y + z;}.bind(this);}.bind(this);\n"],
-         ["() => {}", "(function() {}.bind(this));\n"],
-         ["x = y => {return y;}", "x = function(y) {\n    return y;\n}.bind(this);\n"],
+         ["()=>'test'", "(function() {return \"test\";});\n"],
+         ["x = ()=>'test'", "x = function() {return \"test\";};\n"],
+         ["x=>x", "(function(x) {return x;});\n"],
+         ["x=>x * x", "(function(x) {return x * x;});\n"],
+         ["val=>({key: val})", "(function(val) {return {key: val};});\n"],
+         ["foo.map(v => v + 1)", "foo.map(function(v) {return v + 1;});\n"],
+         ["x = y=>z=>y+z", "x = function(y) {return function(z) {return y + z;};};\n"],
+         ["() => {}", "(function() {});\n"],
+         ["x = y => {return y;}", "x = function(y) {\n    return y;\n};\n"],
+         ["x = () => {return this;}", "x = function() {\n    return this;\n}.bind(this);\n"],
     ];
 
     for (var i = 0; i < tests.length; i++) {
