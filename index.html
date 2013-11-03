@@ -45,19 +45,23 @@ for (var i in obj if obj.hasOwnProperty(i)) {
   log(i);
 }
 
-function decorator(func) {
-  return function() {
-    log(func());
-  };
+// Function shorthand (option+f)
+ƒ decorator(func) {
+  return () => log(func());
 }
 
 @decorator:
-function foo.test() {
+ƒ foo.test() {
   later log('logging this after warning the user');
 
   console.warn('oh no here comes a greeting');
   return 'hello console!';
 }
+
+// ES6 fat arrow functions
+var arrowFunc = x => x + 1;
+arrowFunc =->(3);  // Partial argument binding
+log(arrowFunc());
 
 </textarea>
       <button>Convert</button>
