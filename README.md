@@ -1,4 +1,4 @@
-# bastascript (v0.1)
+# bastascript (v0.2)
 
 Bastascript is a language designed to improve JavaScript's ability to serve as a
 functional programming language with terse, obvious syntax. Bastascript is a

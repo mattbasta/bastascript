@@ -2,7 +2,7 @@
   "author": "Matt Basta",
   "name": "bscript",
   "description": "A JavaScript dialect that adds some useful crap.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "keywords": [
     "parser",
     "ast",
@@ -16,7 +16,7 @@
     "url": "http://github.com/mattbasta/bastascript/issues"
   },
   "engines": {
-    "node": ">= 0.4"
+    "node": ">= 0.9"
   },
   "devDependencies": {
     "jison": "0.3.9",
