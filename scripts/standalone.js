@@ -29,6 +29,7 @@ function generate (path) {
     var script = bundler.bundle(normalizeModules(modules, path));
 
     var out = "var bs = (function() {\n" + script + ";\nreturn require('bs');\n})();";
+    out += require('fs').readFileSync('lib/bootstrap.js') + '';
     console.log(out);
 }
 
