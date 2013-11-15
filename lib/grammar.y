@@ -1383,14 +1383,7 @@ function errorLoc (token, loc1, loc2, loc3) {
 }
 
 function parseNum (num) {
-    if (num[0] === '0') {
-        if (num[1] === 'x' || num[1] === 'X') {
-            return parseInt(num, 16);
-        }
-        return parseInt(num, 8);
-    } else {
-        return Number(num);
-    }
+    return Number(num);
 }
 
 function parseString (str) {
