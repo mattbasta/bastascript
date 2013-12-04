@@ -21,61 +21,39 @@ EIDP [\xaa\xb5\xba\xc0-\xd6\xd8-\xf6\xf8-\u02c1\u02c6-\u02d1\u02e0-\u02e4\u02ec\
 
 ";"                     return ';'
 
-(\r\n|\r|\n)            %{
-                           yy.lineBreak = true;
-                        %}
-
-\s+/(?:(?:"//"|"/*").*(?:\n|\r))  if (yy.ASI) this.unput(';'+yytext);
+(\r\n|\r|\n)            /* skip whitespace */
 
 \s+                     /* skip whitespace */
 
-"//".*\r\n              %{ var t = yytext;
-                           yytext = t.substr(2, yyleng-4);
-                           yy.lineBreak = true;
-                           return 'COMMENT';
-                        %}
-"//".*(\r|\n)           %{ var t = yytext;
-                           yytext = t.substr(2, yyleng-3);
-                           yy.lineBreak = true;
-                           return 'COMMENT';
-                        %}
 "//".*                  %{ var t = yytext;
                            yytext = t.substr(2, yyleng-2);
                            return 'COMMENT';
                         %}
 
-"#".*                   /* skip comment */
-
-"/*"(.|\n|\r)*?"*/"     %{ if (yy.ASI && yytext.match(/\n|\r/)) { this.unput(yytext); yy.ASI=false; return ';';}
-                           if (yytext.match(/\n|\r/)) yy.lineBreak = true;
-                           yytext = yytext.substr(2, yyleng-4);
+"/*"(.|\n|\r)*?"*/"     %{ yytext = yytext.substr(2, yyleng-4);
                            return 'COMMENT_BLOCK'
                         %}
 
-{frac}/([^a-zA-Z$_]{0,1})                     return 'NUMBER';
+{frac}/([^a-zA-Z$_]{0,1})                          return 'NUMBER';
 {int}/([^a-zA-Z$_]{0,1})                           return 'NUMBER';
 
 '"'(?:"\\"(?:.|{LBR})|[^"\\\n])*'"'    %{
-        yy.ASI = false;
         yytext = yytext.substr(1,yyleng-2);
         yy.raw.push(this.match);
         return 'STRING';
     %}
 "'"(?:"\\"(?:.|{LBR})|[^'\\])*"'"    %{
-        yy.ASI = false;
         yytext = yytext.substr(1,yyleng-2);
         yy.raw.push(this.match);
         return 'STRING';
     %}
 
 <regex>({BSL}|{RCLASS}|[^[\\\/])*"/"{UIDP}* %{
-    yy.ASI = false;
     this.begin('INITIAL');
     return 'REGEXP_BODY';
 %}
 
 <regex>({BSL}|{RCLASS}|[^[\\\/*])({BSL}|{RCLASS}|[^[\\\/])*"/"{UIDP}* %{
-    yy.ASI = false;
     this.begin('INITIAL');
     return 'REGEXP_BODY';
 %}
